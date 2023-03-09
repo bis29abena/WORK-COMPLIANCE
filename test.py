@@ -15,18 +15,19 @@ for region in REGION_FILES:
     else:
         print(f"{region} Files Opened Sucessfully")
 
-        employers_list = region_sheet2.query('NUMBER_OF_EMPLOYEES > 1')["FEMPNAME WITHOUT DUPLICATES"].tolist()
+        employers_list = region_sheet2.query('NUMBER_OF_EMPLOYEES > 1')[
+            "FEMPNAME WITHOUT DUPLICATES"].tolist()
 
         for employer in employers_list:
             idx = region_sheet1.index[region_sheet1["FEMPNAME"] == employer].tolist()
             idxs.extend(idx)
 
-        more_employees = region_sheet1.loc[idxs, ["FEMPNAME", "EMP_TOWN", "EMP_ACTUAL_LOCATION"]]
+        more_employees = region_sheet1.loc[idxs, [
+            "FEMPNAME", "EMP_TOWN", "EMP_ACTUAL_LOCATION"]]
         more_employees = more_employees.sort_values(by="FEMPNAME")
         more_employees = more_employees.drop_duplicates(subset="FEMPNAME")
 
-        towns_in_list = pd.DataFrame(list(Counter(more_employees["EMP_TOWN"].tolist()).items()), columns=["TOWN_NAME",
-                                                                                                          "TOTAL"])
+        towns_in_list = pd.DataFrame(list(Counter(more_employees["EMP_TOWN"].tolist()).items()), columns=["TOWN_NAME", "TOTAL"])
         towns_in_list = towns_in_list.sort_values(by="TOTAL", ascending=False)
 
         with pd.ExcelWriter(region, mode="a") as writer:
